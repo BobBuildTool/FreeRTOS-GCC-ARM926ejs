@@ -102,8 +102,8 @@ OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG
 
 # Definition of the linker script and final targets
 LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
-ELF_IMAGE = image.elf
-TARGET = image.bin
+ELF_IMAGE = $(OBJDIR)image.elf
+TARGET = $(OBJDIR)image.bin
 
 # Include paths to be passed to $(CC) where necessary
 INC_FREERTOS = $(FREERTOS_SRC)include/
