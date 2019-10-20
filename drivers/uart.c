@@ -569,7 +569,7 @@ void uart_clearRxInterrupt(uint8_t nr)
  *
  * @return character received at the UART
  */
-char uart_readChar(uint8_t nr)
+int uart_readChar(uint8_t nr)
 {
     /* Sanity check */
     if ( nr >= BSP_NR_UARTS )
@@ -578,7 +578,8 @@ char uart_readChar(uint8_t nr)
     }
 
     /* Wait until the receiving FIFO is not empty */
-    while ( 0 != HWREG_READ_BITS( pReg[nr]->UARTFR, FR_RXFE ) );
+    if ( 0 != HWREG_READ_BITS( pReg[nr]->UARTFR, FR_RXFE ) )
+		return -1;
 
     /*
      * UART DR is a 32-bit register and only the least significant byte must be returned.

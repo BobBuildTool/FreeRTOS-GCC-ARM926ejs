@@ -143,19 +143,30 @@ int16_t recvInit(uint8_t uart_nr)
  */
 static void recvIsrHandler(void)
 {
-    portCHAR ch;
+    int ret;
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-    /* Get the received character from the UART */
-    ch = uart_readChar(recvUartNr);
-
-    /*
-     * Push it to the queue.
-     * Note, since this is not a FreeRTOS task,
-     * a *FromISR implementation of the command must be called!
-     */
-    xQueueSendToBackFromISR(recvQueue, (void*) &ch, 0);
-    /* And acknowledge the interrupt on the UART controller */
+    /* Acknowledge the interrupt on the UART controller */
     uart_clearRxInterrupt(recvUartNr);
+
+    /* Get all received characters from the UART */
+    while ((ret = uart_readChar(recvUartNr)) >= 0) {
+        portCHAR ch = ret;
+        /*
+         * Push it to the queue.
+         * Note, since this is not a FreeRTOS task,
+         * a *FromISR implementation of the command must be called!
+         */
+        xQueueSendToBackFromISR(recvQueue, (void*) &ch, &xHigherPriorityTaskWoken);
+    }
+
+    /* Now the buffer is empty we can switch context if necessary. */
+    if( xHigherPriorityTaskWoken )
+    {
+        /* Actual macro used here is port specific. */
+        // FIXME: not included in this port (yet)
+        //taskYIELD_FROM_ISR ();
+    }
 }
 
 

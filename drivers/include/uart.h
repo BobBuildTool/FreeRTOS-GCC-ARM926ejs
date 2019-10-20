@@ -60,7 +60,7 @@ void uart_disableRxInterrupt(uint8_t nr);
 
 void uart_clearRxInterrupt(uint8_t nr);
 
-char uart_readChar(uint8_t nr);
+int uart_readChar(uint8_t nr);
 
 
 #endif  /* _UART_H_ */
