@@ -42,7 +42,7 @@ OFLAG = -o
 INCLUDEFLAG = -I
 CPUFLAG = -mcpu=arm926ej-s
 WFLAG = -Wall -Wextra -Werror
-CFLAGS = $(CPUFLAG) $(WFLAG)
+CFLAGS += $(CPPFLAGS) $(CPUFLAG) $(WFLAG)
 
 # Additional C compiler flags to produce debugging symbols
 DEB_FLAG = -g -DDEBUG
@@ -132,7 +132,7 @@ $(OBJDIR) :
 	mkdir -p $@
 
 $(ELF_IMAGE) : $(OBJS) $(LINKER_SCRIPT)
-	$(LD) -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(OFLAG) $@
+	$(LD) $(LDFLAGS) -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) -lecho $(OFLAG) $@
 
 debug : _debug_flags all
 
